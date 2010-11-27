@@ -24,7 +24,7 @@ function gameloop() {
   snowball();
   snow();
   if(!gameOver) {
-    setTimeout(gameloop, 50);
+    setTimeout(gameloop, 30);
   }
   else {
     //write game over?
@@ -42,13 +42,17 @@ function icicles() {
 
 }
 
-var wallPoints = [5, 20, 8, 40];
+var wallPoints = [];
+for(var i = 0; i < 999; i++) {
+  wallPoints.push(Math.floor(rand() * 50));
+}
+
 function walls() {
   a.fillStyle = white;
   a.beginPath();
   a.lineTo(0,0);
   for (var i = 0; i < wallPoints.length; i++) {
-    a.lineTo(i * 50, wallPoints[i]);
+    a.lineTo(i * 50 - counter * 2, wallPoints[i]);
   }
   a.lineTo(width + 100, 0);
   detectCollision();
@@ -72,7 +76,7 @@ function snow() {
     var s = snowArray[j] + width + rand() - 0.5 + Math.sin(counter/4) / 4;
     s %= width*height;
     snowArray[j] = s;
-    a.fillRect(snowArray[j] % width, snowArray[j] / width, 1, 1);
+    a.fillRect((snowArray[j] - counter * 2) % width, snowArray[j] / width, 1, 1);
   }
 }
 
