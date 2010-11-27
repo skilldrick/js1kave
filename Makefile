@@ -1,5 +1,5 @@
 default :
-	java -jar compiler.jar --js kave.js --js_output_file kave-min.js
+	java -jar compiler.jar --compilation_level ADVANCED_OPTIMIZATIONS --js kave.js --js_output_file kave-min.js
 	upload.py -vfs
 
 folders :

@@ -1,38 +1,35 @@
 /*
 * i: current frame
-* w: width
-* h: height
-* sa: snow array
 * c: canvas
 * a: context
 */
 var i = 0;
-w=400;
-h=400;
-c.width=w;
-c.height=h;
+var width = 400;
+var height = 400;
+c.width = width;
+c.height = height;
 
 function gameloop() {
   a.fillStyle = 'black';
-  a.fillRect(0,0,w,h);
+  a.fillRect(0,0,width,height);
   i++;
   snow();
   setTimeout(gameloop, 50);
 }
 
-var f = 978;
-var sa = [];
-for(var j = 0; j < f; j++) {
-  sa.push(w*h/f * j + Math.random() * 10);
+var flakes = 978;
+var snowArray = [];
+for(var j = 0; j < flakes; j++) {
+  snowArray.push(width*height/flakes * j + Math.random() * 100);
 }
 
 function snow() {
   a.fillStyle = 'rgba(255,255,255,0.8)';
-  for(var j = 0; j < f; j++) {
-    var s = sa[j] + w + Math.random() - 0.5 + Math.sin(i/4) / 4;
-    s %= w*h;
-    sa[j] = s;
-    a.fillRect(sa[j] % w, sa[j] / w, 1, 1);
+  for(var j = 0; j < flakes; j++) {
+    var s = snowArray[j] + width + Math.random() - 0.5 + Math.sin(i/4) / 4;
+    s %= width*height;
+    snowArray[j] = s;
+    a.fillRect(snowArray[j] % width, snowArray[j] / width, 1, 1);
   }
 }
 
