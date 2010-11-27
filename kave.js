@@ -1,9 +1,8 @@
 /*
-* i: current frame
 * c: canvas
 * a: context
 */
-var i = 0;
+var counter = 0;
 var width = 400;
 var height = 400;
 c.width = width;
@@ -12,7 +11,7 @@ c.height = height;
 function gameloop() {
   a.fillStyle = 'black';
   a.fillRect(0,0,width,height);
-  i++;
+  counter++;
   snow();
   setTimeout(gameloop, 50);
 }
