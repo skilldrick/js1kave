@@ -4,14 +4,15 @@
 */
 var counter = 0;
 /** @const */ var width = 400;
-/** @const */ var height = 400;
+/** @const */ var height = width;
 /** @const */ var white = 'white';
-var snowballX = 40;
-var snowballY = 200;
+var snowballX = 80;
+var snowballY = 120;
 var gameOver = 0;
 var M = Math;
 var rand = M.random;
 var up = -1;
+var fifty = 50;
 var yVel = 0;
 
 c.width = width;
@@ -20,6 +21,8 @@ c.height = height;
 function lineTo(x,y) {
   a.lineTo(x,y);
 }
+
+window['lineTo'] = lineTo;
 
 onkeydown=onkeyup=function(e){
   // if this is a keydown event, new_val gets the value 4, otherwise 0
@@ -34,7 +37,7 @@ onkeydown=onkeyup=function(e){
 function gameloop() {
   a.fillStyle = 'gray';
   a.fillRect(0,0,width,height);
-  counter++;
+  counter += 2;
   //as long as these happen in the right order, only need to set a.fillStyle = white once
   a.fillStyle = white;
   moveSnowball();
@@ -43,16 +46,13 @@ function gameloop() {
   a.fillStyle = "rgb(190,230,255)";
   icicles();
   walls(); 
-  /*
-  a.strokeStyle = 'green';
-  a.lineWidth = 4;
-  a.strokeRect(0,0,width,height);
-  */
+  a.fillStyle = "red";
+  a.font = "50px arial";
   if(!gameOver) {
     setTimeout(gameloop, 30);
   }
   else {
-    //write game over?
+    a.fillText('GAME OVER', fifty, 200);
   }
 }
 
@@ -67,15 +67,18 @@ function detectCollision() {
   }
 }
 
+var icicleArray = [50, 150, 250, 350];
 function icicles() {
-  var x = 200;
-  var y = 200;
-  a.beginPath();
-  a.lineTo(x, y);
-  a.lineTo(x + 20, y);
-  a.lineTo(x + 10, y + 90);
-  a.fill();
-  
+  for (var i = 0; i < 4; i++) {
+    var x = (width - (counter%width) + icicleArray[i]) % width - fifty;
+    var y = height - x - 160;
+    a.beginPath();
+    lineTo(x, y);
+    lineTo(x + 10, y + 3);
+    lineTo(x + 5, y + 70);
+    detectCollision();
+    a.fill();
+  }
 }
 
 var firstWallPoint = 0;
@@ -91,18 +94,18 @@ function newWallPoint() {
 function walls() {
   a.beginPath();
   lineTo(0,0);
-  if (counter % 25 == 0) {
+  if (counter % fifty == 0) {
     newWallPoint();
     firstWallPoint++;
   }
   for (var i = 0; i < 10; i++) {
-    var xpos = i * 50 - ((counter * 2) % 50);
+    var xpos = i * fifty - (counter % fifty);
     lineTo(xpos, wallPoints[i + firstWallPoint]);
   }
   lineTo(width, 0);
   lineTo(0, 0);
   for (var i = 0; i < 10; i++) {
-    var xpos = i * 50 - ((counter * 2) % 50);
+    var xpos = i * fifty - (counter % fifty);
     lineTo(xpos, 250 + wallPoints[i + firstWallPoint]);
   }
   lineTo(width, height);
@@ -113,11 +116,11 @@ function walls() {
 
 function snowball() {
   a.beginPath();
-  a.arc(snowballX, snowballY, 10, 0, M.PI*2, true);
+  a.arc(snowballX, snowballY, 10, 0, M.PI*2, 1);
   a.fill();
 }
 
-var flakes = 978;//978
+var flakes = 978;
 var snowArray = [];
 for(var j = 0; j < flakes; j++) {
   snowArray.push(width*height/flakes * j + rand() * 100);
@@ -125,11 +128,11 @@ for(var j = 0; j < flakes; j++) {
 
 function snow() {
   for(var j = 0; j < flakes; j++) {
-    var s = snowArray[j] + width + rand() - 0.5 + M.sin(counter/4) / 4;
+    var s = snowArray[j] + width + rand() - 0.5;// + M.sin(counter/2) / 4;
     s %= width*height;
     snowArray[j] = s;
-    var x = (snowArray[j] - (counter * 2) % width) % width;
-    var y = snowArray[j] / width;
+    var x = (s - counter % width) % width;
+    var y = s / width;
     a.fillRect(x, y, 1, 1);
   }
 }

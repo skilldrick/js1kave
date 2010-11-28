@@ -1,5 +1,6 @@
 default :
 	java -jar compiler.jar --compilation_level ADVANCED_OPTIMIZATIONS --js kave.js --js_output_file kave-min.js
+	sed -i 's/window\.lineTo=.;//' kave-min.js
 	upload.py -vfs
 	stat -c%s kave-min.js
 
@@ -14,4 +15,5 @@ profile :
 
 compile :
 	java -jar compiler.jar --compilation_level ADVANCED_OPTIMIZATIONS --js kave.js --js_output_file kave-min.js
+	sed -i 's/window\.lineTo=.;//' kave-min.js
 	stat -c%s kave-min.js
