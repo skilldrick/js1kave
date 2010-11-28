@@ -94,7 +94,7 @@ for(var i = 0; i < 10; i++) {
 }
 
 function newWallPoint() {
-  wallPoints.push(M.floor(rand() * 110 + 5));
+  wallPoints.push(rand() * 110 + 5);
 }
 
 function walls() {
