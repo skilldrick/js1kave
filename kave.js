@@ -22,7 +22,12 @@ function lineTo(x,y) {
   a.lineTo(x,y);
 }
 
+function beginPath() {
+  a.beginPath();
+}
+
 window['lineTo'] = lineTo;
+window['beginPath'] = beginPath;
 
 onkeydown=onkeyup=function(e){
   // if this is a keydown event, new_val gets the value 4, otherwise 0
@@ -38,12 +43,12 @@ function gameloop() {
   a.fillStyle = 'gray';
   a.fillRect(0,0,width,height);
   counter += 2;
+  moveSnowball();
   //as long as these happen in the right order, only need to set a.fillStyle = white once
   a.fillStyle = white;
-  moveSnowball();
   snowball();
   snow();
-  a.fillStyle = "rgb(190,230,255)";
+  a.fillStyle = "lightblue";//"rgb(190,230,255)";
   icicles();
   walls(); 
   a.fillStyle = "red";
@@ -62,7 +67,7 @@ function moveSnowball() {
 }
 
 function detectCollision() {
-  if (a.isPointInPath(snowballX, snowballY)) {
+  if (a.isPointInPath(90, snowballY)) { //front middle point
     gameOver = 1;
   }
 }
@@ -72,10 +77,11 @@ function icicles() {
   for (var i = 0; i < 4; i++) {
     var x = (width - (counter%width) + icicleArray[i]) % width - fifty;
     var y = height - x - 160;
-    a.beginPath();
+    beginPath();
     lineTo(x, y);
     lineTo(x + 10, y + 3);
     lineTo(x + 5, y + 70);
+    lineTo(x, y);
     detectCollision();
     a.fill();
   }
@@ -88,11 +94,11 @@ for(var i = 0; i < 10; i++) {
 }
 
 function newWallPoint() {
-  wallPoints.push(M.floor(rand() * 120 + 10));
+  wallPoints.push(M.floor(rand() * 110 + 5));
 }
 
 function walls() {
-  a.beginPath();
+  beginPath();
   lineTo(0,0);
   if (counter % fifty == 0) {
     newWallPoint();
@@ -115,7 +121,7 @@ function walls() {
 }
 
 function snowball() {
-  a.beginPath();
+  beginPath();
   a.arc(snowballX, snowballY, 10, 0, M.PI*2, 1);
   a.fill();
 }
@@ -123,7 +129,7 @@ function snowball() {
 var flakes = 978;
 var snowArray = [];
 for(var j = 0; j < flakes; j++) {
-  snowArray.push(width*height/flakes * j + rand() * 100);
+  snowArray.push(164 * j + rand() * 100); //164 = (width*height) / flakes
 }
 
 function snow() {
@@ -131,7 +137,7 @@ function snow() {
     var s = snowArray[j] + width + rand() - 0.5;// + M.sin(counter/2) / 4;
     s %= width*height;
     snowArray[j] = s;
-    var x = (s - counter % width) % width;
+    var x = (s - counter) % width;
     var y = s / width;
     a.fillRect(x, y, 1, 1);
   }
