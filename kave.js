@@ -9,13 +9,26 @@ var counter = 0;
 var snowballX = 20;
 var snowballY = 200;
 var gameOver = false;
-var rand = Math.random;
+var M = Math;
+var rand = M.random;
 
 c.width = width;
 c.height = height;
 
+b.onkeydown=b.onkeyup=function(e){
+  // if this is a keydown event, new_val gets the value 4, otherwise 0
+  var new_val=e.type[5]?4:0;
+  e=e.keyCode;
+
+  // give jump a truthy value if up was pressed, falsy if up was released
+  jump=e^38?jump:new_val;
+
+  // similar for speed_x, inverting new_val if left is pressed
+  speed_x=e^37?e^39?speed_x:new_val:-new_val
+}
+
 function gameloop() {
-  a.fillStyle = 'chocolate';
+  a.fillStyle = 'gray';
   a.fillRect(0,0,width,height);
   counter++;
   icicles();
@@ -53,7 +66,7 @@ for(var i = 0; i < 10; i++) {
 }
 
 function newWallPoint() {
-  wallPoints.push(Math.floor(rand() * 120 + 10));
+  wallPoints.push(M.floor(rand() * 120 + 10));
 }
 
 function walls() {
@@ -68,13 +81,20 @@ function walls() {
     a.lineTo(xpos, wallPoints[i + firstWallPoint]);
   }
   a.lineTo(width, 0);
+  a.lineTo(0, 0);
+  for (var i = 0; i < 10; i++) {
+    var xpos = i * 50 - ((counter * 2) % 50);
+    a.lineTo(xpos, 250 + wallPoints[i + firstWallPoint]);
+  }
+  a.lineTo(width, height);
+  a.lineTo(0, height);
   detectCollision();
   a.fill();
 }
 
 function snowball() {
   a.beginPath();
-  a.arc(snowballX, snowballY, 10, 0, Math.PI*2, true);
+  a.arc(snowballX, snowballY, 10, 0, M.PI*2, true);
   a.fill();
 }
 
@@ -86,7 +106,7 @@ for(var j = 0; j < flakes; j++) {
 
 function snow() {
   for(var j = 0; j < flakes; j++) {
-    var s = snowArray[j] + width + rand() - 0.5 + Math.sin(counter/4) / 4;
+    var s = snowArray[j] + width + rand() - 0.5 + M.sin(counter/4) / 4;
     s %= width*height;
     snowArray[j] = s;
     var x = (snowArray[j] - (counter * 2) % width) % width;
