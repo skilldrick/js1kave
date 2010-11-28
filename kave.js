@@ -6,40 +6,48 @@ var counter = 0;
 /** @const */ var width = 400;
 /** @const */ var height = 400;
 /** @const */ var white = 'white';
-var snowballX = 20;
+var snowballX = 40;
 var snowballY = 200;
-var gameOver = false;
+var gameOver = 0;
 var M = Math;
 var rand = M.random;
+var up = -1;
+var yVel = 0;
 
 c.width = width;
 c.height = height;
 
-b.onkeydown=b.onkeyup=function(e){
+function lineTo(x,y) {
+  a.lineTo(x,y);
+}
+
+onkeydown=onkeyup=function(e){
   // if this is a keydown event, new_val gets the value 4, otherwise 0
-  var new_val=e.type[5]?4:0;
+  var new_val=e.type[5]?1:-1;
   e=e.keyCode;
-
-  // give jump a truthy value if up was pressed, falsy if up was released
-  jump=e^38?jump:new_val;
-
-  // similar for speed_x, inverting new_val if left is pressed
-  speed_x=e^37?e^39?speed_x:new_val:-new_val
+  // if space pressed, up is truthy (credit where credit's due:
+  // this is adapted from Legend of the Bouncing Beholder 
+  // http://js1k.com/2010-first/demo/635)
+  up=e^32?up:new_val;
 }
 
 function gameloop() {
   a.fillStyle = 'gray';
   a.fillRect(0,0,width,height);
   counter++;
-  icicles();
   //as long as these happen in the right order, only need to set a.fillStyle = white once
   a.fillStyle = white;
-  walls(); 
+  moveSnowball();
   snowball();
   snow();
+  a.fillStyle = "rgb(190,230,255)";
+  icicles();
+  walls(); 
+  /*
   a.strokeStyle = 'green';
   a.lineWidth = 4;
   a.strokeRect(0,0,width,height);
+  */
   if(!gameOver) {
     setTimeout(gameloop, 30);
   }
@@ -48,15 +56,26 @@ function gameloop() {
   }
 }
 
+function moveSnowball() {
+  yVel -= up/3;
+  snowballY += yVel;
+}
+
 function detectCollision() {
   if (a.isPointInPath(snowballX, snowballY)) {
-    gameOver = true;
-    console.log(snowballX, snowballY);
+    gameOver = 1;
   }
 }
 
 function icicles() {
-
+  var x = 200;
+  var y = 200;
+  a.beginPath();
+  a.lineTo(x, y);
+  a.lineTo(x + 20, y);
+  a.lineTo(x + 10, y + 90);
+  a.fill();
+  
 }
 
 var firstWallPoint = 0;
@@ -71,23 +90,23 @@ function newWallPoint() {
 
 function walls() {
   a.beginPath();
-  a.lineTo(0,0);
+  lineTo(0,0);
   if (counter % 25 == 0) {
     newWallPoint();
     firstWallPoint++;
   }
   for (var i = 0; i < 10; i++) {
     var xpos = i * 50 - ((counter * 2) % 50);
-    a.lineTo(xpos, wallPoints[i + firstWallPoint]);
+    lineTo(xpos, wallPoints[i + firstWallPoint]);
   }
-  a.lineTo(width, 0);
-  a.lineTo(0, 0);
+  lineTo(width, 0);
+  lineTo(0, 0);
   for (var i = 0; i < 10; i++) {
     var xpos = i * 50 - ((counter * 2) % 50);
-    a.lineTo(xpos, 250 + wallPoints[i + firstWallPoint]);
+    lineTo(xpos, 250 + wallPoints[i + firstWallPoint]);
   }
-  a.lineTo(width, height);
-  a.lineTo(0, height);
+  lineTo(width, height);
+  lineTo(0, height);
   detectCollision();
   a.fill();
 }
